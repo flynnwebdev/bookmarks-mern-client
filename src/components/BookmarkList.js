@@ -14,17 +14,17 @@ export default class BookmarkList extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        <h1>Bookmarks</h1>
-        <ul>
-        {
-          this.props.bookmarks.map(
-            bookmark => <Bookmark key={bookmark._id} bookmark={bookmark} remove={this.props.remove} />
-          )
-        }
-        </ul>
-      </div>
-    )
+      return (
+        <div>
+          <h1>Bookmarks</h1>
+          <ul>
+          {
+            this.props.bookmarks.map(
+              bookmark => <Bookmark key={bookmark._id} bookmark={bookmark} remove={this.props.remove} />
+            )
+          }
+          </ul>
+        </div>
+      )
   }
 }

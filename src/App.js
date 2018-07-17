@@ -30,8 +30,7 @@ class App extends Component {
       })
       this.token = response.data.token
       setJwt(response.data.token)
-      this.forceUpdate()
-      // BookmarkListContainer.fetchBookmarks()
+      BookmarkListContainer.fetchBookmarks()
     } catch (error) {
       store.dispatch({ type: 'set_loginError' , loginError: error.message })
     }
@@ -84,8 +83,7 @@ class App extends Component {
   componentDidMount() {
     if (this.token) {
       setJwt(this.token)
-      this.forceUpdate()
-      // BookmarkListContainer.fetchBookmarks()
+      BookmarkListContainer.fetchBookmarks()
     }
   }
 

@@ -6,27 +6,22 @@ import { api } from '../api/init'
 import BookmarkList from './BookmarkList'
 
 export default class BookmarkListContainer extends React.Component {
+  static fetchBookmarks = async () => {
+    const bookmarks = await api.get('/bookmarks')
+    store.dispatch({ type: 'set_bookmarks', bookmarks: bookmarks.data })
+  }
+
   remove = (id) => {
     store.dispatch({ type: 'delete_bookmark', id })
   }
 
-  async componentDidMount() {
-    try {
-      const bookmarks = await api.get('/bookmarks')
-      // store.dispatch({ bookmarks: bookmarks.data })
-      // Dispatch a set_bookmarks action to Redux
-      store.dispatch({ type: 'set_bookmarks', bookmarks: bookmarks.data })
-    }
-    catch(error) {
-      alert('Can\'t get bookmarks!')
-    }
-  }
-
   render() {
-    const { bookmarks } = store.getState() || []
-
-    return (
-      <BookmarkList bookmarks={bookmarks} remove={this.remove} />
-    )
+    if (store.getState() && store.getState().bookmarks) {
+      return (
+        <BookmarkList bookmarks={store.getState().bookmarks} remove={this.remove} />
+      )
+    } else {
+      return <h2>Loading ...</h2>
+    }
   }
 }

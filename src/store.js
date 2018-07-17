@@ -1,4 +1,5 @@
 import { createStore } from 'redux'
+import { api } from './api/init'
 
 const deleteBookmark = (state, action) => {
   const index = state.bookmarks.findIndex(bookmark => bookmark._id === action.id)
