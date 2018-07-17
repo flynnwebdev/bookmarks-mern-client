@@ -4,12 +4,11 @@ import styles from './App.css';
 import axios from 'axios'
 import decodeJWT from 'jwt-decode'
 import { api, setJwt } from './api/init'
-import Bookmark from './components/Bookmark'
 import SignIn from './components/SignIn'
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom'
 import store from './store'
 import { Title, BigTitle, StyledLink } from './App.styles'
-
+import BookmarkListContainer from './components/BookmarkListContainer'
 
 class App extends Component {
 
@@ -31,8 +30,8 @@ class App extends Component {
       })
       this.token = response.data.token
       setJwt(response.data.token)
-      this.fetchBookmarks()
-      //this.forceUpdate()
+      this.forceUpdate()
+      // BookmarkListContainer.fetchBookmarks()
     } catch (error) {
       store.dispatch({ type: 'set_loginError' , loginError: error.message })
     }
@@ -46,21 +45,20 @@ class App extends Component {
   }
 
   render() {
-    console.log(store.getState())
     const tokenDetails = this.token && decodeJWT(this.token)
-    const { bookmarks } = store.getState() || []
     return (
       <div className="App">
       {
         <Router>
           <Fragment>
-            <Route exact path="/login" render={(props) => {
-              if (this.token) {
-                return (<Redirect to="/bookmarks"/>)
-              } else {
-                return (<SignIn loginError={store.getState().loginError} handleSignIn={this.handleSignIn} />)
+            <Route exact path="/login" render={(props) =>
+              {
+                if (this.token) {
+                  return (<Redirect to="/bookmarks"/>)
+                } else {
+                  return (<SignIn loginError={store.getState().loginError} handleSignIn={this.handleSignIn} />)
+                }
               }
-            }
             } />
             <Route exact path="/bookmarks" render={(props) => (
               this.token ? (
@@ -70,14 +68,7 @@ class App extends Component {
                   <p>You logged in at: { new Date(tokenDetails.iat * 1000).toLocaleString() }</p>
                   <p>Your token expires at: { new Date(tokenDetails.exp * 1000).toLocaleString() }</p>
                   <button onClick={this.handleSignOut}>Logout</button>
-                  <h1>Bookmarks</h1>
-                  <ul>
-                  {
-                    bookmarks.map(
-                      bookmark => <Bookmark key={bookmark._id} {...bookmark} />
-                    )
-                  }
-                  </ul>
+                  <BookmarkListContainer />
                 </Fragment>
               ) : (
                 <Redirect to="/login"/>
@@ -93,21 +84,11 @@ class App extends Component {
   componentDidMount() {
     if (this.token) {
       setJwt(this.token)
-      this.fetchBookmarks()
+      this.forceUpdate()
+      // BookmarkListContainer.fetchBookmarks()
     }
   }
 
-  async fetchBookmarks() {
-    try {
-      const bookmarks = await api.get('/bookmarks')
-      // store.dispatch({ bookmarks: bookmarks.data })
-      // Dispatch a set_bookmarks action to Redux
-      store.dispatch({ type: 'set_bookmarks', bookmarks: bookmarks.data })
-    }
-    catch(error) {
-      alert('Can\'t get bookmarks!')
-    }
-  }
 }
 
 export default App;
