@@ -1,15 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import types from 'prop-types'
-import Bookmark from './Bookmark'
+import Bookmark, { BookmarkType } from './Bookmark'
 
 export default class BookmarkList extends React.Component {
   static propTypes = {
-    bookmarks: types.arrayOf(types.shape({
-      _id: types.string,
-      title: types.string.isRequired,
-      url: types.string.isRequired
-    })).isRequired,
+    bookmarks: types.arrayOf(BookmarkType).isRequired,
     remove: types.func
   }
 

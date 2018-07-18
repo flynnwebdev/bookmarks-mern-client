@@ -9,7 +9,7 @@ const StyledBookmark = styled.div`
   margin-bottom: 0.5em;
 `
 
-function Bookmark (props) {
+export default function Bookmark (props) {
   const { _id, title, url } = props.bookmark
   const { remove } = props
   return (
@@ -20,14 +20,13 @@ function Bookmark (props) {
   )
 }
 
-Bookmark.propTypes = {
-  bookmark: types.shape({
-    _id: types.string,
-    title: types.string.isRequired,
-    url: types.string.isRequired,
-  }).isRequired,
-  remove: types.func,
-//  foo: types.oneOf(['bar', 'bat'])
-}
+export const BookmarkType = types.shape({
+  _id: types.string,
+  title: types.string.isRequired,
+  url: types.string.isRequired
+})
 
-export default Bookmark
+Bookmark.propTypes = {
+  bookmark: BookmarkType.isRequired,
+  remove: types.func
+}
