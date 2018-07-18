@@ -6,7 +6,7 @@ import decodeJWT from 'jwt-decode'
 import { api, setJwt } from './api/init'
 import SignIn from './components/SignIn'
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom'
-import store from './store'
+//import store from './store'
 import { Title, BigTitle, StyledLink } from './App.styles'
 import BookmarkListContainer from './components/BookmarkListContainer'
 
@@ -32,14 +32,14 @@ class App extends Component {
       setJwt(response.data.token)
       BookmarkListContainer.fetchBookmarks()
     } catch (error) {
-      store.dispatch({ type: 'set_loginError' , loginError: error.message })
+      this.setState({ loginError: error.message })
     }
   }
 
   handleSignOut = (event) => {
     api.get('/auth/logout').then(() => {
       localStorage.removeItem('token')
-      store.dispatch({ type: 'set_bookmarks', bookmarks: [] })
+      this.setState({ bookmarks: [] })
     })
   }
 
@@ -55,7 +55,7 @@ class App extends Component {
                 if (this.token) {
                   return (<Redirect to="/bookmarks"/>)
                 } else {
-                  return (<SignIn loginError={store.getState().loginError} handleSignIn={this.handleSignIn} />)
+                  return (<SignIn loginError={this.state.loginError} handleSignIn={this.handleSignIn} />)
                 }
               }
             } />
@@ -81,6 +81,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    window.app = this
     if (this.token) {
       setJwt(this.token)
       BookmarkListContainer.fetchBookmarks()
