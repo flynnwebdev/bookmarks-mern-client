@@ -6,7 +6,7 @@ class Store {
     this.app = app
   }
   get state() {
-    return this.app ? this.app.state : {}
+    return this.app && this.app.state ? this.app.state : {}
   }
   setState(obj) {
     if (this.app) this.app.setState(obj)
